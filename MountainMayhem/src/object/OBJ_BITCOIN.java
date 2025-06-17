@@ -11,12 +11,13 @@ public class OBJ_BITCOIN extends SuperObject{
 	try {
 		
 		image = ImageIO.read(getClass().getResourceAsStream("/objects/bitcoin.png"));
+		if (image == null) {
+			System.out.println("OBJ_BITCOIN: bitcoin.png image not found or failed to load!");
+		}
 			
 	
 	}catch(IOException e) {
 		e.printStackTrace();
 	}
-
-
 	}
 }

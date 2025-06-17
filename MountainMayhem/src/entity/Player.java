@@ -22,12 +22,11 @@ public class Player extends Entity{
 	public int hasCoin = 0;
 	
 	public Player(GamePanel gp, KeyHandler keyH) {
-		
-	this.gp = gp;
-	this.keyH = keyH;
-	
-	screenX = gp.screenWidth/2 - (gp.tileSize/2);
-	screenY = gp.screenHeight/2 - (gp.tileSize/2);
+		this.gp = gp;
+		this.keyH = keyH;
+		// Center player on screen
+		screenX = gp.screenWidth / 2 - gp.tileSize / 2;
+		screenY = gp.screenHeight / 2 - gp.tileSize / 2;
 	
 	solidArea = new Rectangle();
 	solidArea.x = 8;
@@ -45,8 +44,8 @@ public class Player extends Entity{
 	public void setDefaultValues() {
 		
 		//starting pos in the world
-		worldX = gp.tileSize * 50;
-		worldY = gp.tileSize * 50;
+		worldX = gp.tileSize * 10;
+		worldY = gp.tileSize * 10;
 		
 		speed = 4;
 		direction = "down";
@@ -150,35 +149,45 @@ if(i !=999){
 
 	switch(objectName){
 		case "BitCoin":
-		gp.playSE(1);
-		hasCoin++;
-		gp.obj[i] = null;
-		gp.ui.showMessage("you found a Bitcoin in the woods!");
-		break;
+			gp.playSE(1);
+			hasCoin++;
+			gp.obj[i] = null;
+			break;
 		
 		case "Portal":
-		if(hasCoin > 0) {
-			gp.playSE(3);
-			gp.obj[i] = null;
-			hasCoin--;
-			gp.ui.showMessage("You bribed the portal");
-		}
-		else {
-			gp.ui.showMessage("You are broke, find some Bitcoin");
-		}
-
-		break;
+			// Win the game when opening the portal (if enough coins)
+			if(hasCoin > 177) {
+				gp.ui.gameFinished = true;
+				gp.stopMusic();
+				gp.playSE(4);
+				// Delay advancing to next map until after win message is shown
+				new java.util.Timer().schedule(
+					new java.util.TimerTask() {
+						@Override
+						public void run() {
+							gp.ui.gameFinished = false;
+							gp.advanceToNextMap();
+						}
+					},
+					2000 // 2 seconds delay
+				);
+				gp.obj[i] = null;
+				hasCoin--;
+				gp.ui.showMessage("You unlocked the portal!");
+			}
+			else {
+				gp.ui.showMessage("You haven't gotten all the coins yet!");
+			}
+			break;
 		case "Energy":
-		gp.playSE(2);
-		speed += 2;
-		gp.obj[i] = null;
-		gp.ui.showMessage("Energy Drink!");
-		break;
+			gp.playSE(2);
+			speed += 2;
+			gp.obj[i] = null;
+			gp.ui.showMessage("Energy Drink!");
+			break;
 		case "LockBox":
-		gp.ui.gameFinished = true;
-		gp.stopMusic();
-		gp.playSE(4);
-		break;
+			// No win/gameFinished logic here anymore
+			break;
 	}
 }
 }
@@ -220,10 +229,10 @@ public void draw(Graphics2D g2) {
 	}
 
 	
-	g2.drawImage(image, screenX, screenY, gp.tileSize,gp.tileSize, null);
-	
-	
-	
+	// Draw player at world position (not screenX/screenY)
+	g2.drawImage(image, worldX, worldY, gp.tileSize, gp.tileSize, null);
 }
 
+
 }
+

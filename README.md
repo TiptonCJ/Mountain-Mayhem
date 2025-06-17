@@ -10,7 +10,6 @@ When originally submitted, the game had a handful of features and gameplay that 
 - doors that could only be opened if you had the required cost
 - a chest that, once reached, wins you the game
 
-Since then I have added the following features:
-- 
-
+Since then, I adjusted the scope of the project and made a lot of changes. I'm sure you can see the inspiration...
+Current features include: 
 

@@ -18,16 +18,18 @@ public class SuperObject {
 	
 	public void draw(Graphics2D g2, GamePanel gp) {
 		
-		int screenX = worldX - gp.player.worldX + gp.player.screenX;
-		int screenY = worldY - gp.player.worldY + gp.player.screenY;
+		// Draw at world position (no camera offset)
+		int screenX = worldX;
+		int screenY = worldY;
 
-		if(worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
-			worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
-			worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
-			worldY  - gp.tileSize < gp.player.worldY + gp.player.screenY)
-		{
+		if (image != null) {
 			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+		} else {
+			System.out.println("SuperObject: image is null for " + name);
 		}
-		
 	}
 }
+		
+		
+	
+

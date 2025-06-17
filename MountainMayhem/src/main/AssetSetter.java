@@ -15,42 +15,60 @@ public class AssetSetter {
 	
 	
 	public void setObject() {
-		
-		gp.obj[0] = new OBJ_BITCOIN();
-		gp.obj[0].worldX = 37 * gp.tileSize;
-		gp.obj[0].worldY = 32 * gp.tileSize;
-		
-		gp.obj[1] = new OBJ_BITCOIN();
-		gp.obj[1].worldX = 11 * gp.tileSize;
-		gp.obj[1].worldY = 61 * gp.tileSize;
-		
-		gp.obj[2] = new OBJ_BITCOIN();
-		gp.obj[2].worldX = 86 * gp.tileSize;
-		gp.obj[2].worldY = 76 * gp.tileSize;
+		// Clear previous objects
+		for (int i = 0; i < gp.obj.length; i++) {
+			gp.obj[i] = null;
+		}
 
-		gp.obj[8] = new OBJ_BITCOIN();
-		gp.obj[8].worldX = 12 * gp.tileSize;
-		gp.obj[8].worldY = 85 * gp.tileSize;
-		
-		gp.obj[3] = new OBJ_PORTAL();
-		gp.obj[3].worldX = 88 * gp.tileSize;
-		gp.obj[3].worldY = 12 * gp.tileSize;
-		
-		gp.obj[4] = new OBJ_PORTAL();
-		gp.obj[4].worldX = 88 * gp.tileSize;
-		gp.obj[4].worldY = 34 * gp.tileSize;
-		
-		gp.obj[5] = new OBJ_PORTAL();
-		gp.obj[5].worldX = 88 * gp.tileSize;
-		gp.obj[5].worldY = 19 * gp.tileSize;
-		
-		gp.obj[6] = new OBJ_LOCKBOX();
-		gp.obj[6].worldX = 88 * gp.tileSize;
-		gp.obj[6].worldY = 7 * gp.tileSize;
-
-		gp.obj[7] = new OBJ_ENERGY();
-		gp.obj[7].worldX = 49 * gp.tileSize;
-		gp.obj[7].worldY = 81 * gp.tileSize;
+		int objIndex = 0;
+		// Only objects represent collectable bitcoins. Do not use tile[17] for bitcoin tiles.
+		switch (gp.getCurrentMapIndex()) {
+			case 0: // World 1: Place bitcoin on every tile with value 5
+				for (int row = 0; row < gp.maxWorldRow; row++) {
+					for (int col = 0; col < gp.maxWorldCol; col++) {
+						if (gp.tileM.mapTileNum[col][row] == 5) {
+							if (objIndex < gp.obj.length) {
+								gp.obj[objIndex] = new OBJ_BITCOIN();
+								gp.obj[objIndex].worldX = col * gp.tileSize;
+								gp.obj[objIndex].worldY = row * gp.tileSize;
+								objIndex++;
+							}
+						}
+					}
+				}
+				//place lockbox
+				if (objIndex < gp.obj.length) {
+					gp.obj[objIndex] = new OBJ_PORTAL();
+					gp.obj[objIndex].worldX = 23 * gp.tileSize;
+					gp.obj[objIndex].worldY = 13 * gp.tileSize;
+					objIndex++;
+				}
+				break;
+			case 1: // World 2: Place bitcoin on every tile with value 0
+				for (int row = 0; row < gp.maxWorldRow; row++) {
+					for (int col = 0; col < gp.maxWorldCol; col++) {
+						if (gp.tileM.mapTileNum[col][row] == 0) {
+							if (objIndex < gp.obj.length) {
+								gp.obj[objIndex] = new OBJ_BITCOIN();
+								gp.obj[objIndex].worldX = col * gp.tileSize;
+								gp.obj[objIndex].worldY = row * gp.tileSize;
+								objIndex++;
+							}
+						}
+					}
+				}
+				// Place lockbox as example
+				if (objIndex < gp.obj.length) {
+					gp.obj[objIndex] = new OBJ_LOCKBOX();
+					gp.obj[objIndex].worldX = 20 * gp.tileSize;
+					gp.obj[objIndex].worldY = 10 * gp.tileSize;
+					objIndex++;
+				}
+				break;
+			default:
+				// No objects for unknown maps
+				break;
+		}
 	}
 	
 	

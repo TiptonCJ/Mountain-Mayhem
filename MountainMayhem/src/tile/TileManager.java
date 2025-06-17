@@ -24,7 +24,7 @@ public class TileManager {
 		mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
 		
 		getTileImage();
-		loadMap("/maps/world02.txt");
+		// Do not load a map here; let GamePanel control which map is loaded
 	}
 	
 	public void getTileImage()
@@ -141,37 +141,15 @@ public class TileManager {
 	}
 	public void draw(Graphics2D g2)
 	{
-		
-		int worldCol = 0;
-		int worldRow = 0;
-		
-		
-		while(worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow)
-		{
-			//iterates through the 2D array and associates each number 0-2 to a texture we assigned
-			int tileNum = mapTileNum[worldCol][worldRow];
-			
-			int worldX = worldCol * gp.tileSize;
-			int worldY = worldRow * gp.tileSize;
-			int screenX = worldX - gp.player.worldX + gp.player.screenX;
-			int screenY = worldY - gp.player.worldY + gp.player.screenY;
-
-			if(worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
-				worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
-				worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
-				worldY  - gp.tileSize < gp.player.worldY + gp.player.screenY)
-			{
-				g2.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
-			}
-			worldCol++;
-			
-			//when col reaches max, reset col,x, and increase y;
-			if(worldCol == gp.maxWorldCol)
-			{
-				worldCol = 0;
-				worldRow++;
+		for (int row = 0; row < gp.maxWorldRow; row++) {
+			for (int col = 0; col < gp.maxWorldCol; col++) {
+				int tileNum = mapTileNum[col][row];
+				int x = col * gp.tileSize;
+				int y = row * gp.tileSize;
+				g2.drawImage(tile[tileNum].image, x, y, gp.tileSize, gp.tileSize, null);
 			}
 		}
-
 	}
 }
+
+

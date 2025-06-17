@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import javax.swing.JPanel;
 
 import entity.Player;
+import entity.MapInfo;
 import object.SuperObject;
 import tile.TileManager;
 
@@ -18,14 +19,14 @@ public class GamePanel extends JPanel implements Runnable{
 	final int originalTileSize = 16; // Original tile size (16x16)
 	final int scale = 3; // Scale factor
 	public final int tileSize = originalTileSize * scale; // Scaled tile size (48x48)
-	public final int maxScreenCol = 16; // Maximum number of columns on the screen
-	public final int maxScreenRow = 12; // Maximum number of rows on the screen
-	public final int screenWidth = tileSize * maxScreenCol; // Screen width (768 pixels)
-	public final int screenHeight = tileSize * maxScreenRow; // Screen height (576 pixels)
+	public final int maxScreenCol = 25; // Match map size
+	public final int maxScreenRow = 15; // Match map size
+	public final int screenWidth = tileSize * maxScreenCol; // Fit entire map
+	public final int screenHeight = tileSize * maxScreenRow; // Fit entire map
 
 	//world map parameters
-	public final int maxWorldCol = 150;
-	public final int maxWorldRow = 100;
+	public final int maxWorldCol = 25;
+	public final int maxWorldRow = 15;
 	
 	// Frame rate
 	int FPS = 60;
@@ -44,9 +45,15 @@ public class GamePanel extends JPanel implements Runnable{
 	//Entity and Object
 	public Player player = new Player(this,keyH);
 	//increase from 10 for more objects
-	public SuperObject obj[] = new SuperObject[10];
+	public SuperObject obj[] = new SuperObject[400];
 	
-	
+	// Map management
+	private MapInfo[] maps = {
+        new MapInfo("World 1", 5, 3, "maps/world01.txt"),
+        new MapInfo("World 2", 8, 5, "maps/world02.txt")
+    };
+    private int currentMapIndex = 0;
+    private MapInfo currentMap = maps[0];
 
 	// Constructor for the GamePanel class
 	public GamePanel () {
@@ -65,9 +72,30 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	
 	public void setupGame() {
+		loadMap(currentMapIndex);
 		aSetter.setObject();
 		playMusic(0);
 	}
+	
+	public void loadMap(int mapIndex) {
+        if (mapIndex >= 0 && mapIndex < maps.length) {
+            currentMapIndex = mapIndex;
+            currentMap = maps[mapIndex];
+            // Load the map layout from the current map's file
+            tileM.loadMap("/" + currentMap.getLayoutFile());
+            // TODO: set enemy and pickup counts using currentMap.getEnemyCount(), getPickupCount()
+            System.out.println("Loaded map: " + currentMap);
+        }
+    }
+
+    public void advanceToNextMap() {
+        if (currentMapIndex + 1 < maps.length) {
+            loadMap(currentMapIndex + 1);
+            // Optionally reset player position, objects, etc.
+        } else {
+            System.out.println("No more maps! Game complete.");
+        }
+    }
 	
 	
 	
@@ -163,6 +191,10 @@ public void playSE(int i){
 	sounds.setFile(i);
 	sounds.play();
 }
+
+public int getCurrentMapIndex() {
+        return currentMapIndex;
+    }
 
 
 
